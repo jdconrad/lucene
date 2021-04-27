@@ -86,7 +86,7 @@ final class Lucene90DocValuesProducer extends DocValuesProducer {
                 state.segmentInfo.getId(),
                 state.segmentSuffix);
 
-        readFields(state.segmentInfo.name, in, state.fieldInfos);
+        readFields(in, state.fieldInfos);
 
       } catch (Throwable exception) {
         priorE = exception;
@@ -127,7 +127,7 @@ final class Lucene90DocValuesProducer extends DocValuesProducer {
     }
   }
 
-  private void readFields(String segmentName, IndexInput meta, FieldInfos infos)
+  private void readFields(IndexInput meta, FieldInfos infos)
       throws IOException {
     for (int fieldNumber = meta.readInt(); fieldNumber != -1; fieldNumber = meta.readInt()) {
       FieldInfo info = infos.fieldInfo(fieldNumber);
@@ -138,19 +138,7 @@ final class Lucene90DocValuesProducer extends DocValuesProducer {
       if (type == Lucene90DocValuesFormat.NUMERIC) {
         numerics.put(info.name, readNumeric(meta));
       } else if (type == Lucene90DocValuesFormat.BINARY) {
-        String value = info.getAttribute(Lucene90DocValuesFormat.MODE_KEY);
-        if (value == null) {
-          throw new IllegalStateException(
-              "missing value for "
-                  + Lucene90DocValuesFormat.MODE_KEY
-                  + " for field: "
-                  + info.name
-                  + " in segment: "
-                  + segmentName);
-        }
-        Lucene90DocValuesFormat.Mode mode = Lucene90DocValuesFormat.Mode.valueOf(value);
-        final boolean compressed = mode == Lucene90DocValuesFormat.Mode.BEST_COMPRESSION;
-        binaries.put(info.name, readBinary(meta, compressed));
+        binaries.put(info.name, readBinary(meta));
       } else if (type == Lucene90DocValuesFormat.SORTED) {
         sorted.put(info.name, readSorted(meta));
       } else if (type == Lucene90DocValuesFormat.SORTED_SET) {
@@ -198,9 +186,8 @@ final class Lucene90DocValuesProducer extends DocValuesProducer {
     entry.valueJumpTableOffset = meta.readLong();
   }
 
-  private BinaryEntry readBinary(IndexInput meta, boolean compressed) throws IOException {
+  private BinaryEntry readBinary(IndexInput meta) throws IOException {
     final BinaryEntry entry = new BinaryEntry();
-    entry.compressed = compressed;
     entry.dataOffset = meta.readLong();
     entry.dataLength = meta.readLong();
     entry.docsWithFieldOffset = meta.readLong();
@@ -210,18 +197,11 @@ final class Lucene90DocValuesProducer extends DocValuesProducer {
     entry.numDocsWithField = meta.readInt();
     entry.minLength = meta.readInt();
     entry.maxLength = meta.readInt();
-    if ((entry.compressed && entry.numDocsWithField > 0) || entry.minLength < entry.maxLength) {
+    if (entry.minLength < entry.maxLength) {
       entry.addressesOffset = meta.readLong();
 
       // Old count of uncompressed addresses
       long numAddresses = entry.numDocsWithField + 1L;
-      // New count of compressed addresses - the number of compresseed blocks
-      if (entry.compressed) {
-        entry.numCompressedChunks = meta.readVInt();
-        entry.docsPerChunkShift = meta.readVInt();
-        entry.maxUncompressedChunkSize = meta.readVInt();
-        numAddresses = entry.numCompressedChunks;
-      }
 
       final int blockShift = meta.readVInt();
       entry.addressesMeta = DirectMonotonicReader.loadMeta(meta, numAddresses, blockShift);
