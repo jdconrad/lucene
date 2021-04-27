@@ -147,9 +147,6 @@ public final class Lucene90DocValuesFormat extends DocValuesFormat {
     BEST_COMPRESSION
   }
 
-  /** Attribute key for compression mode. */
-  public static final String MODE_KEY = Lucene90DocValuesFormat.class.getSimpleName() + ".mode";
-
   private final Mode mode;
 
   /** Default constructor. */
@@ -193,9 +190,6 @@ public final class Lucene90DocValuesFormat extends DocValuesFormat {
 
   static final int NUMERIC_BLOCK_SHIFT = 14;
   static final int NUMERIC_BLOCK_SIZE = 1 << NUMERIC_BLOCK_SHIFT;
-
-  static final int BINARY_BLOCK_SHIFT = 5;
-  static final int BINARY_DOCS_PER_COMPRESSED_BLOCK = 1 << BINARY_BLOCK_SHIFT;
 
   static final int TERMS_DICT_BLOCK_SHIFT = 4;
   static final int TERMS_DICT_BLOCK_SIZE = 1 << TERMS_DICT_BLOCK_SHIFT;

@@ -20,7 +20,6 @@ import static org.apache.lucene.codecs.lucene90.Lucene90DocValuesFormat.DIRECT_M
 import static org.apache.lucene.codecs.lucene90.Lucene90DocValuesFormat.NUMERIC_BLOCK_SHIFT;
 import static org.apache.lucene.codecs.lucene90.Lucene90DocValuesFormat.NUMERIC_BLOCK_SIZE;
 
-import java.io.Closeable;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -31,7 +30,6 @@ import org.apache.lucene.codecs.CodecUtil;
 import org.apache.lucene.codecs.DocValuesConsumer;
 import org.apache.lucene.codecs.DocValuesProducer;
 import org.apache.lucene.index.BinaryDocValues;
-import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.DocValues;
 import org.apache.lucene.index.EmptyDocValuesProducer;
 import org.apache.lucene.index.FieldInfo;
@@ -46,9 +44,7 @@ import org.apache.lucene.search.SortedSetSelector;
 import org.apache.lucene.store.ByteArrayDataOutput;
 import org.apache.lucene.store.ByteBuffersDataOutput;
 import org.apache.lucene.store.ByteBuffersIndexOutput;
-import org.apache.lucene.store.ChecksumIndexInput;
 import org.apache.lucene.store.DataOutput;
-import org.apache.lucene.store.IOContext;
 import org.apache.lucene.store.IndexOutput;
 import org.apache.lucene.util.ArrayUtil;
 import org.apache.lucene.util.BytesRef;
@@ -57,7 +53,6 @@ import org.apache.lucene.util.IOUtils;
 import org.apache.lucene.util.MathUtil;
 import org.apache.lucene.util.StringHelper;
 import org.apache.lucene.util.compress.LZ4;
-import org.apache.lucene.util.compress.LZ4.FastCompressionHashTable;
 import org.apache.lucene.util.packed.DirectMonotonicWriter;
 import org.apache.lucene.util.packed.DirectWriter;
 
@@ -67,7 +62,6 @@ final class Lucene90DocValuesConsumer extends DocValuesConsumer {
   final Lucene90DocValuesFormat.Mode mode;
   IndexOutput data, meta;
   final int maxDoc;
-  private final SegmentWriteState state;
   private byte[] termsDictBuffer;
 
   /** expert: Creates a new writer */
@@ -85,7 +79,6 @@ final class Lucene90DocValuesConsumer extends DocValuesConsumer {
     }
     boolean success = false;
     try {
-      this.state = state;
       String dataName =
           IndexFileNames.segmentFileName(
               state.segmentInfo.name, state.segmentSuffix, dataExtension);

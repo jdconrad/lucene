@@ -127,8 +127,7 @@ final class Lucene90DocValuesProducer extends DocValuesProducer {
     }
   }
 
-  private void readFields(IndexInput meta, FieldInfos infos)
-      throws IOException {
+  private void readFields(IndexInput meta, FieldInfos infos) throws IOException {
     for (int fieldNumber = meta.readInt(); fieldNumber != -1; fieldNumber = meta.readInt()) {
       FieldInfo info = infos.fieldInfo(fieldNumber);
       if (info == null) {
@@ -336,7 +335,6 @@ final class Lucene90DocValuesProducer extends DocValuesProducer {
     long addressesOffset;
     long addressesLength;
     DirectMonotonicReader.Meta addressesMeta;
-    int numCompressedChunks;
     int docsPerChunkShift;
     int maxUncompressedChunkSize;
   }
