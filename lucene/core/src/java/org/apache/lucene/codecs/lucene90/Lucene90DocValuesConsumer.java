@@ -59,7 +59,6 @@ import org.apache.lucene.util.packed.DirectWriter;
 /** writer for {@link Lucene90DocValuesFormat} */
 final class Lucene90DocValuesConsumer extends DocValuesConsumer {
 
-  final Lucene90DocValuesFormat.Mode mode;
   IndexOutput data, meta;
   final int maxDoc;
   private byte[] termsDictBuffer;
@@ -70,10 +69,8 @@ final class Lucene90DocValuesConsumer extends DocValuesConsumer {
       String dataCodec,
       String dataExtension,
       String metaCodec,
-      String metaExtension,
-      Lucene90DocValuesFormat.Mode mode)
+      String metaExtension)
       throws IOException {
-    this.mode = mode;
     this.termsDictBuffer = new byte[1 << 14];
     boolean success = false;
     try {

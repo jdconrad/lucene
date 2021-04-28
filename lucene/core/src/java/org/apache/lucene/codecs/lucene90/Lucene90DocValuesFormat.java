@@ -139,31 +139,15 @@ import org.apache.lucene.util.packed.DirectWriter;
  */
 public final class Lucene90DocValuesFormat extends DocValuesFormat {
 
-  /** Configuration option for doc values. */
-  public enum Mode {
-    /** Trade compression ratio for retrieval speed. */
-    BEST_SPEED,
-    /** Trade retrieval speed for compression ratio. */
-    BEST_COMPRESSION
-  }
-
-  private final Mode mode;
-
   /** Default constructor. */
   public Lucene90DocValuesFormat() {
-    this(Mode.BEST_SPEED);
-  }
-
-  /** Constructor */
-  public Lucene90DocValuesFormat(Mode mode) {
-    super("Lucene90");
-    this.mode = Objects.requireNonNull(mode);
+      super("Lucene90");
   }
 
   @Override
   public DocValuesConsumer fieldsConsumer(SegmentWriteState state) throws IOException {
     return new Lucene90DocValuesConsumer(
-        state, DATA_CODEC, DATA_EXTENSION, META_CODEC, META_EXTENSION, mode);
+        state, DATA_CODEC, DATA_EXTENSION, META_CODEC, META_EXTENSION);
   }
 
   @Override
