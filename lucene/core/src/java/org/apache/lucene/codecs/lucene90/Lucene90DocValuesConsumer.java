@@ -74,9 +74,7 @@ final class Lucene90DocValuesConsumer extends DocValuesConsumer {
       Lucene90DocValuesFormat.Mode mode)
       throws IOException {
     this.mode = mode;
-    if (Lucene90DocValuesFormat.Mode.BEST_COMPRESSION == this.mode) {
-      this.termsDictBuffer = new byte[1 << 14];
-    }
+    this.termsDictBuffer = new byte[1 << 14];
     boolean success = false;
     try {
       String dataName =
@@ -527,9 +525,7 @@ final class Lucene90DocValuesConsumer extends DocValuesConsumer {
     final long size = values.getValueCount();
     meta.writeVLong(size);
     boolean compress =
-        Lucene90DocValuesFormat.Mode.BEST_COMPRESSION == mode
-            && values.getValueCount()
-                > Lucene90DocValuesFormat.TERMS_DICT_BLOCK_COMPRESSION_THRESHOLD;
+        values.getValueCount() > Lucene90DocValuesFormat.TERMS_DICT_BLOCK_COMPRESSION_THRESHOLD;
     int code, blockMask, shift;
     if (compress) {
       code = Lucene90DocValuesFormat.TERMS_DICT_BLOCK_LZ4_CODE;
