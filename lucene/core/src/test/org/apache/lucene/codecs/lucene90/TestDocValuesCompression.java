@@ -28,57 +28,57 @@ import org.apache.lucene.codecs.Codec;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.SortedDocValuesField;
-import org.apache.lucene.document.SortedSetDocValuesField;
+// import org.apache.lucene.document.SortedSetDocValuesField;
 import org.apache.lucene.document.StringField;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.index.LeafReader;
 import org.apache.lucene.index.SortedDocValues;
-import org.apache.lucene.index.SortedSetDocValues;
+// import org.apache.lucene.index.SortedSetDocValues;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.util.BytesRef;
 import org.apache.lucene.util.LuceneTestCase;
 import org.apache.lucene.util.TestUtil;
 
 public class TestDocValuesCompression extends LuceneTestCase {
-  private final Codec bestSpeed = new Lucene90Codec(Lucene90Codec.Mode.BEST_SPEED);
+  //  private final Codec bestSpeed = new Lucene90Codec(Lucene90Codec.Mode.BEST_SPEED);
   private final Codec bestCompression = new Lucene90Codec(Lucene90Codec.Mode.BEST_COMPRESSION);
 
-  public void testTermsDictCompressionForLowCardinalityFields() throws IOException {
-    final int CARDINALITY = Lucene90DocValuesFormat.TERMS_DICT_BLOCK_COMPRESSION_THRESHOLD - 1;
-    Set<String> valuesSet = new HashSet<>();
-    for (int i = 0; i < CARDINALITY; ++i) {
-      final int length = TestUtil.nextInt(random(), 10, 30);
-      String value = TestUtil.randomSimpleString(random(), length);
-      valuesSet.add(value);
-    }
+  //  public void testTermsDictCompressionForLowCardinalityFields() throws IOException {
+  //    final int CARDINALITY = Lucene90DocValuesFormat.TERMS_DICT_BLOCK_COMPRESSION_THRESHOLD - 1;
+  //    Set<String> valuesSet = new HashSet<>();
+  //    for (int i = 0; i < CARDINALITY; ++i) {
+  //      final int length = TestUtil.nextInt(random(), 10, 30);
+  //      String value = TestUtil.randomSimpleString(random(), length);
+  //      valuesSet.add(value);
+  //    }
+  //
+  //    List<String> values = new ArrayList<>(valuesSet);
+  //    long sizeForBestSpeed = writeAndGetDocValueFileSize(bestSpeed, values);
+  //    long sizeForBestCompression = writeAndGetDocValueFileSize(bestCompression, values);
+  //
+  //    // Ensure terms dict data was not compressed for low-cardinality fields.
+  //    assertEquals(sizeForBestSpeed, sizeForBestCompression);
+  //  }
 
-    List<String> values = new ArrayList<>(valuesSet);
-    long sizeForBestSpeed = writeAndGetDocValueFileSize(bestSpeed, values);
-    long sizeForBestCompression = writeAndGetDocValueFileSize(bestCompression, values);
-
-    // Ensure terms dict data was not compressed for low-cardinality fields.
-    assertEquals(sizeForBestSpeed, sizeForBestCompression);
-  }
-
-  public void testTermsDictCompressionForHighCardinalityFields() throws IOException {
-    final int CARDINALITY = Lucene90DocValuesFormat.TERMS_DICT_BLOCK_COMPRESSION_THRESHOLD << 1;
-    Set<String> valuesSet = new HashSet<>();
-    for (int i = 0; i < CARDINALITY; ++i) {
-      final int length = TestUtil.nextInt(random(), 10, 30);
-      String value = TestUtil.randomSimpleString(random(), length);
-      // Add common suffix for better compression ratio.
-      valuesSet.add(value + "_CommonPartBetterForCompression");
-    }
-
-    List<String> values = new ArrayList<>(valuesSet);
-    long sizeForBestSpeed = writeAndGetDocValueFileSize(bestSpeed, values);
-    long sizeForBestCompression = writeAndGetDocValueFileSize(bestCompression, values);
-
-    // Compression happened.
-    assertTrue(sizeForBestCompression < sizeForBestSpeed);
-  }
+  //  public void testTermsDictCompressionForHighCardinalityFields() throws IOException {
+  //    final int CARDINALITY = Lucene90DocValuesFormat.TERMS_DICT_BLOCK_COMPRESSION_THRESHOLD << 1;
+  //    Set<String> valuesSet = new HashSet<>();
+  //    for (int i = 0; i < CARDINALITY; ++i) {
+  //      final int length = TestUtil.nextInt(random(), 10, 30);
+  //      String value = TestUtil.randomSimpleString(random(), length);
+  //      // Add common suffix for better compression ratio.
+  //      valuesSet.add(value + "_CommonPartBetterForCompression");
+  //    }
+  //
+  //    List<String> values = new ArrayList<>(valuesSet);
+  //    long sizeForBestSpeed = writeAndGetDocValueFileSize(bestSpeed, values);
+  //    long sizeForBestCompression = writeAndGetDocValueFileSize(bestCompression, values);
+  //
+  //    // Compression happened.
+  //    assertTrue(sizeForBestCompression < sizeForBestSpeed);
+  //  }
 
   public void testReseekAfterSkipDecompression() throws IOException {
     final int CARDINALITY = (Lucene90DocValuesFormat.TERMS_DICT_BLOCK_LZ4_SIZE << 1) + 11;
@@ -164,143 +164,148 @@ public class TestDocValuesCompression extends LuceneTestCase {
   }
 
   // Ensure the old segment can be merged together with the new compressed segment.
-  public void testMergeWithUncompressedSegment() throws IOException {
-    final int CARDINALITY = Lucene90DocValuesFormat.TERMS_DICT_BLOCK_COMPRESSION_THRESHOLD << 1;
-    Set<String> valuesSet = new HashSet<>();
-    for (int i = 0; i < CARDINALITY; ++i) {
-      final int length = TestUtil.nextInt(random(), 10, 30);
-      // Add common suffix for better compression ratio.
-      valuesSet.add(TestUtil.randomSimpleString(random(), length));
-    }
-    List<String> values = new ArrayList<>(valuesSet);
-    int valuesCount = values.size();
+  //  public void testMergeWithUncompressedSegment() throws IOException {
+  //    final int CARDINALITY = Lucene90DocValuesFormat.TERMS_DICT_BLOCK_COMPRESSION_THRESHOLD << 1;
+  //    Set<String> valuesSet = new HashSet<>();
+  //    for (int i = 0; i < CARDINALITY; ++i) {
+  //      final int length = TestUtil.nextInt(random(), 10, 30);
+  //      // Add common suffix for better compression ratio.
+  //      valuesSet.add(TestUtil.randomSimpleString(random(), length));
+  //    }
+  //    List<String> values = new ArrayList<>(valuesSet);
+  //    int valuesCount = values.size();
+  //
+  //    try (Directory directory = newDirectory()) {
+  //      // 1. Write 256 documents without terms dict compression.
+  //      Analyzer analyzer = new StandardAnalyzer();
+  //      IndexWriterConfig config = new IndexWriterConfig(analyzer);
+  //      config.setCodec(bestSpeed);
+  //      config.setUseCompoundFile(false);
+  //      IndexWriter writer = new IndexWriter(directory, config);
+  //      for (int i = 0; i < 256; i++) {
+  //        Document doc = new Document();
+  //        doc.add(new StringField("id", "Doc" + i, Field.Store.NO));
+  //        doc.add(new SortedSetDocValuesField("ssdv", new BytesRef(values.get(i % valuesCount))));
+  //        doc.add(
+  //            new SortedSetDocValuesField("ssdv", new BytesRef(values.get((i + 1) %
+  // valuesCount))));
+  //        doc.add(
+  //            new SortedSetDocValuesField("ssdv", new BytesRef(values.get((i + 2) %
+  // valuesCount))));
+  //        doc.add(new SortedDocValuesField("sdv", new BytesRef(values.get(i % valuesCount))));
+  //        writer.addDocument(doc);
+  //      }
+  //      writer.commit();
+  //      DirectoryReader ireader = DirectoryReader.open(writer);
+  //      assertEquals(256, ireader.numDocs());
+  //      LeafReader reader = getOnlyLeafReader(ireader);
+  //      SortedSetDocValues ssdv = reader.getSortedSetDocValues("ssdv");
+  //      assertEquals(valuesCount, ssdv.getValueCount());
+  //      SortedDocValues sdv = reader.getSortedDocValues("sdv");
+  //      assertEquals(valuesCount, sdv.getValueCount());
+  //      ireader.close();
+  //      writer.close();
+  //
+  //      // 2. Add another 100 documents, and enabling terms dict compression.
+  //      config = new IndexWriterConfig(analyzer);
+  //      config.setCodec(bestCompression);
+  //      config.setUseCompoundFile(false);
+  //      writer = new IndexWriter(directory, config);
+  //      // Add 2 new values.
+  //      valuesSet.add(TestUtil.randomSimpleString(random(), 10));
+  //      valuesSet.add(TestUtil.randomSimpleString(random(), 10));
+  //      values = new ArrayList<>(valuesSet);
+  //      valuesCount = valuesSet.size();
+  //
+  //      for (int i = 256; i < 356; i++) {
+  //        Document doc = new Document();
+  //        doc.add(new StringField("id", "Doc" + i, Field.Store.NO));
+  //        doc.add(new SortedSetDocValuesField("ssdv", new BytesRef(values.get(i % valuesCount))));
+  //        doc.add(new SortedDocValuesField("sdv", new BytesRef(values.get(i % valuesCount))));
+  //        writer.addDocument(doc);
+  //      }
+  //      writer.commit();
+  //      writer.forceMerge(1);
+  //      ireader = DirectoryReader.open(writer);
+  //      assertEquals(356, ireader.numDocs());
+  //      reader = getOnlyLeafReader(ireader);
+  //      ssdv = reader.getSortedSetDocValues("ssdv");
+  //      assertEquals(valuesCount, ssdv.getValueCount());
+  //      ireader.close();
+  //      writer.close();
+  //    }
+  //  }
 
-    try (Directory directory = newDirectory()) {
-      // 1. Write 256 documents without terms dict compression.
-      Analyzer analyzer = new StandardAnalyzer();
-      IndexWriterConfig config = new IndexWriterConfig(analyzer);
-      config.setCodec(bestSpeed);
-      config.setUseCompoundFile(false);
-      IndexWriter writer = new IndexWriter(directory, config);
-      for (int i = 0; i < 256; i++) {
-        Document doc = new Document();
-        doc.add(new StringField("id", "Doc" + i, Field.Store.NO));
-        doc.add(new SortedSetDocValuesField("ssdv", new BytesRef(values.get(i % valuesCount))));
-        doc.add(
-            new SortedSetDocValuesField("ssdv", new BytesRef(values.get((i + 1) % valuesCount))));
-        doc.add(
-            new SortedSetDocValuesField("ssdv", new BytesRef(values.get((i + 2) % valuesCount))));
-        doc.add(new SortedDocValuesField("sdv", new BytesRef(values.get(i % valuesCount))));
-        writer.addDocument(doc);
-      }
-      writer.commit();
-      DirectoryReader ireader = DirectoryReader.open(writer);
-      assertEquals(256, ireader.numDocs());
-      LeafReader reader = getOnlyLeafReader(ireader);
-      SortedSetDocValues ssdv = reader.getSortedSetDocValues("ssdv");
-      assertEquals(valuesCount, ssdv.getValueCount());
-      SortedDocValues sdv = reader.getSortedDocValues("sdv");
-      assertEquals(valuesCount, sdv.getValueCount());
-      ireader.close();
-      writer.close();
-
-      // 2. Add another 100 documents, and enabling terms dict compression.
-      config = new IndexWriterConfig(analyzer);
-      config.setCodec(bestCompression);
-      config.setUseCompoundFile(false);
-      writer = new IndexWriter(directory, config);
-      // Add 2 new values.
-      valuesSet.add(TestUtil.randomSimpleString(random(), 10));
-      valuesSet.add(TestUtil.randomSimpleString(random(), 10));
-      values = new ArrayList<>(valuesSet);
-      valuesCount = valuesSet.size();
-
-      for (int i = 256; i < 356; i++) {
-        Document doc = new Document();
-        doc.add(new StringField("id", "Doc" + i, Field.Store.NO));
-        doc.add(new SortedSetDocValuesField("ssdv", new BytesRef(values.get(i % valuesCount))));
-        doc.add(new SortedDocValuesField("sdv", new BytesRef(values.get(i % valuesCount))));
-        writer.addDocument(doc);
-      }
-      writer.commit();
-      writer.forceMerge(1);
-      ireader = DirectoryReader.open(writer);
-      assertEquals(356, ireader.numDocs());
-      reader = getOnlyLeafReader(ireader);
-      ssdv = reader.getSortedSetDocValues("ssdv");
-      assertEquals(valuesCount, ssdv.getValueCount());
-      ireader.close();
-      writer.close();
-    }
-  }
-
-  private static long writeAndGetDocValueFileSize(Codec codec, List<String> values)
-      throws IOException {
-    int valuesCount = values.size();
-    long dvdFileSize = -1;
-    try (Directory directory = newDirectory()) {
-      Analyzer analyzer = new StandardAnalyzer();
-      IndexWriterConfig config = new IndexWriterConfig(analyzer);
-      config.setCodec(codec);
-      config.setUseCompoundFile(false);
-      IndexWriter writer = new IndexWriter(directory, config);
-      for (int i = 0; i < 256; i++) {
-        Document doc = new Document();
-        doc.add(new StringField("id", "Doc" + i, Field.Store.NO));
-        // Multi value sorted-set field.
-        doc.add(
-            new SortedSetDocValuesField("ssdv_multi_", new BytesRef(values.get(i % valuesCount))));
-        doc.add(
-            new SortedSetDocValuesField(
-                "ssdv_multi_", new BytesRef(values.get((i + 1) % valuesCount))));
-        doc.add(
-            new SortedSetDocValuesField(
-                "ssdv_multi_", new BytesRef(values.get((i + 2) % valuesCount))));
-        // Single value sorted-set field.
-        doc.add(
-            new SortedSetDocValuesField("ssdv_single_", new BytesRef(values.get(i % valuesCount))));
-        // Sorted field.
-        doc.add(new SortedDocValuesField("sdv", new BytesRef(values.get(i % valuesCount))));
-        writer.addDocument(doc);
-      }
-      writer.commit();
-      writer.forceMerge(1);
-      DirectoryReader ireader = DirectoryReader.open(writer);
-      writer.close();
-
-      LeafReader reader = getOnlyLeafReader(ireader);
-      // Check values count.
-      SortedSetDocValues ssdvMulti = reader.getSortedSetDocValues("ssdv_multi_");
-      assertEquals(valuesCount, ssdvMulti.getValueCount());
-      for (int i = 0; i < valuesCount; i++) {
-        BytesRef term = ssdvMulti.lookupOrd(i);
-        assertTrue(term.bytes.length > 0);
-      }
-      for (int i = 0; i < valuesCount; i++) {
-        for (int j = 0; j < 3; j++) {
-          assertTrue(ssdvMulti.lookupTerm(new BytesRef(values.get((i + j) % valuesCount))) >= 0);
-        }
-      }
-
-      SortedSetDocValues ssdvSingle = reader.getSortedSetDocValues("ssdv_single_");
-      assertEquals(valuesCount, ssdvSingle.getValueCount());
-      for (int i = 0; i < valuesCount; i++) {
-        assertTrue(ssdvSingle.lookupTerm(new BytesRef(values.get(i % valuesCount))) >= 0);
-      }
-
-      SortedDocValues sdv = reader.getSortedDocValues("sdv");
-      assertEquals(valuesCount, sdv.getValueCount());
-      for (int i = 0; i < valuesCount; i++) {
-        assertTrue(sdv.lookupTerm(new BytesRef(values.get(i % valuesCount))) >= 0);
-      }
-
-      dvdFileSize = docValueFileSize(directory);
-      assertTrue(dvdFileSize > 0);
-      ireader.close();
-    }
-
-    return dvdFileSize;
-  }
+  //  private static long writeAndGetDocValueFileSize(Codec codec, List<String> values)
+  //      throws IOException {
+  //    int valuesCount = values.size();
+  //    long dvdFileSize = -1;
+  //    try (Directory directory = newDirectory()) {
+  //      Analyzer analyzer = new StandardAnalyzer();
+  //      IndexWriterConfig config = new IndexWriterConfig(analyzer);
+  //      config.setCodec(codec);
+  //      config.setUseCompoundFile(false);
+  //      IndexWriter writer = new IndexWriter(directory, config);
+  //      for (int i = 0; i < 256; i++) {
+  //        Document doc = new Document();
+  //        doc.add(new StringField("id", "Doc" + i, Field.Store.NO));
+  //        // Multi value sorted-set field.
+  //        doc.add(
+  //            new SortedSetDocValuesField("ssdv_multi_", new BytesRef(values.get(i %
+  // valuesCount))));
+  //        doc.add(
+  //            new SortedSetDocValuesField(
+  //                "ssdv_multi_", new BytesRef(values.get((i + 1) % valuesCount))));
+  //        doc.add(
+  //            new SortedSetDocValuesField(
+  //                "ssdv_multi_", new BytesRef(values.get((i + 2) % valuesCount))));
+  //        // Single value sorted-set field.
+  //        doc.add(
+  //            new SortedSetDocValuesField("ssdv_single_", new BytesRef(values.get(i %
+  // valuesCount))));
+  //        // Sorted field.
+  //        doc.add(new SortedDocValuesField("sdv", new BytesRef(values.get(i % valuesCount))));
+  //        writer.addDocument(doc);
+  //      }
+  //      writer.commit();
+  //      writer.forceMerge(1);
+  //      DirectoryReader ireader = DirectoryReader.open(writer);
+  //      writer.close();
+  //
+  //      LeafReader reader = getOnlyLeafReader(ireader);
+  //      // Check values count.
+  //      SortedSetDocValues ssdvMulti = reader.getSortedSetDocValues("ssdv_multi_");
+  //      assertEquals(valuesCount, ssdvMulti.getValueCount());
+  //      for (int i = 0; i < valuesCount; i++) {
+  //        BytesRef term = ssdvMulti.lookupOrd(i);
+  //        assertTrue(term.bytes.length > 0);
+  //      }
+  //      for (int i = 0; i < valuesCount; i++) {
+  //        for (int j = 0; j < 3; j++) {
+  //          assertTrue(ssdvMulti.lookupTerm(new BytesRef(values.get((i + j) % valuesCount))) >=
+  // 0);
+  //        }
+  //      }
+  //
+  //      SortedSetDocValues ssdvSingle = reader.getSortedSetDocValues("ssdv_single_");
+  //      assertEquals(valuesCount, ssdvSingle.getValueCount());
+  //      for (int i = 0; i < valuesCount; i++) {
+  //        assertTrue(ssdvSingle.lookupTerm(new BytesRef(values.get(i % valuesCount))) >= 0);
+  //      }
+  //
+  //      SortedDocValues sdv = reader.getSortedDocValues("sdv");
+  //      assertEquals(valuesCount, sdv.getValueCount());
+  //      for (int i = 0; i < valuesCount; i++) {
+  //        assertTrue(sdv.lookupTerm(new BytesRef(values.get(i % valuesCount))) >= 0);
+  //      }
+  //
+  //      dvdFileSize = docValueFileSize(directory);
+  //      assertTrue(dvdFileSize > 0);
+  //      ireader.close();
+  //    }
+  //
+  //    return dvdFileSize;
+  //  }
 
   static long docValueFileSize(Directory d) throws IOException {
     for (String file : d.listAll()) {
