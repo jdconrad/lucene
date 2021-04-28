@@ -21,9 +21,7 @@ import org.apache.lucene.util.TestUtil;
 
 /** Tests Lucene90DocValuesFormat */
 public class TestBestSpeedLucene90DocValuesFormat extends BaseLucene90DocValuesFormatTestCase {
-  private final Codec codec =
-      TestUtil.alwaysDocValuesFormat(
-          new Lucene90DocValuesFormat());
+  private final Codec codec = TestUtil.alwaysDocValuesFormat(new Lucene90DocValuesFormat());
 
   @Override
   protected Codec getCodec() {

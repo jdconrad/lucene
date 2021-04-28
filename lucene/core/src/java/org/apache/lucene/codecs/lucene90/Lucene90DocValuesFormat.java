@@ -17,7 +17,6 @@
 package org.apache.lucene.codecs.lucene90;
 
 import java.io.IOException;
-import java.util.Objects;
 import org.apache.lucene.codecs.DocValuesConsumer;
 import org.apache.lucene.codecs.DocValuesFormat;
 import org.apache.lucene.codecs.DocValuesProducer;
@@ -141,7 +140,7 @@ public final class Lucene90DocValuesFormat extends DocValuesFormat {
 
   /** Default constructor. */
   public Lucene90DocValuesFormat() {
-      super("Lucene90");
+    super("Lucene90");
   }
 
   @Override
