@@ -80,7 +80,7 @@ public class Lucene90Codec extends Codec {
         }
       };
 
-  private final VectorFormat vectorFormat = new Lucene90VectorFormat();
+  private final VectorFormat vectorFormat = new Lucene90HnswVectorFormat();
 
   private final StoredFieldsFormat storedFieldsFormat;
 
