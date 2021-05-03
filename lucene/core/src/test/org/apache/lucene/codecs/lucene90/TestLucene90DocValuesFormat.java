@@ -770,41 +770,6 @@ public class TestLucene90DocValuesFormat extends BaseCompressingDocValuesFormatT
     ir.close();
   }
 
-  //  public void testTermsDictCompressionForLowCardinalityFields() throws IOException {
-  //    final int CARDINALITY = Lucene90DocValuesFormat.TERMS_DICT_BLOCK_COMPRESSION_THRESHOLD - 1;
-  //    Set<String> valuesSet = new HashSet<>();
-  //    for (int i = 0; i < CARDINALITY; ++i) {
-  //      final int length = TestUtil.nextInt(random(), 10, 30);
-  //      String value = TestUtil.randomSimpleString(random(), length);
-  //      valuesSet.add(value);
-  //    }
-  //
-  //    List<String> values = new ArrayList<>(valuesSet);
-  //    long sizeForBestSpeed = writeAndGetDocValueFileSize(bestSpeed, values);
-  //    long sizeForBestCompression = writeAndGetDocValueFileSize(getCodec(), values);
-  //
-  //    // Ensure terms dict data was not compressed for low-cardinality fields.
-  //    assertEquals(sizeForBestSpeed, sizeForBestCompression);
-  //  }
-
-  //  public void testTermsDictCompressionForHighCardinalityFields() throws IOException {
-  //    final int CARDINALITY = Lucene90DocValuesFormat.TERMS_DICT_BLOCK_COMPRESSION_THRESHOLD << 1;
-  //    Set<String> valuesSet = new HashSet<>();
-  //    for (int i = 0; i < CARDINALITY; ++i) {
-  //      final int length = TestUtil.nextInt(random(), 10, 30);
-  //      String value = TestUtil.randomSimpleString(random(), length);
-  //      // Add common suffix for better compression ratio.
-  //      valuesSet.add(value + "_CommonPartBetterForCompression");
-  //    }
-  //
-  //    List<String> values = new ArrayList<>(valuesSet);
-  //    long sizeForBestSpeed = writeAndGetDocValueFileSize(bestSpeed, values);
-  //    long sizeForBestCompression = writeAndGetDocValueFileSize(bestCompression, values);
-  //
-  //    // Compression happened.
-  //    assertTrue(sizeForBestCompression < sizeForBestSpeed);
-  //  }
-
   public void testReseekAfterSkipDecompression() throws IOException {
     final int CARDINALITY = (Lucene90DocValuesFormat.TERMS_DICT_BLOCK_LZ4_SIZE << 1) + 11;
     Set<String> valueSet = new HashSet<>(CARDINALITY);
@@ -886,85 +851,5 @@ public class TestLucene90DocValuesFormat extends BaseCompressingDocValuesFormatT
       assertEquals(valuesCount, ssdvMulti.getValueCount());
       ireader.close();
     }
-  }
-
-  //  private static long writeAndGetDocValueFileSize(Codec codec, List<String> values)
-  //      throws IOException {
-  //    int valuesCount = values.size();
-  //    long dvdFileSize = -1;
-  //    try (Directory directory = newDirectory()) {
-  //      Analyzer analyzer = new StandardAnalyzer();
-  //      IndexWriterConfig config = new IndexWriterConfig(analyzer);
-  //      config.setCodec(codec);
-  //      config.setUseCompoundFile(false);
-  //      IndexWriter writer = new IndexWriter(directory, config);
-  //      for (int i = 0; i < 256; i++) {
-  //        Document doc = new Document();
-  //        doc.add(new StringField("id", "Doc" + i, Field.Store.NO));
-  //        // Multi value sorted-set field.
-  //        doc.add(
-  //            new SortedSetDocValuesField("ssdv_multi_", new BytesRef(values.get(i %
-  //                valuesCount))));
-  //        doc.add(
-  //            new SortedSetDocValuesField(
-  //                "ssdv_multi_", new BytesRef(values.get((i + 1) % valuesCount))));
-  //        doc.add(
-  //            new SortedSetDocValuesField(
-  //                "ssdv_multi_", new BytesRef(values.get((i + 2) % valuesCount))));
-  //        // Single value sorted-set field.
-  //        doc.add(
-  //            new SortedSetDocValuesField("ssdv_single_", new BytesRef(values.get(i %
-  //                valuesCount))));
-  //        // Sorted field.
-  //        doc.add(new SortedDocValuesField("sdv", new BytesRef(values.get(i % valuesCount))));
-  //        writer.addDocument(doc);
-  //      }
-  //      writer.commit();
-  //      writer.forceMerge(1);
-  //      DirectoryReader ireader = DirectoryReader.open(writer);
-  //      writer.close();
-  //
-  //      LeafReader reader = getOnlyLeafReader(ireader);
-  //      // Check values count.
-  //      SortedSetDocValues ssdvMulti = reader.getSortedSetDocValues("ssdv_multi_");
-  //      assertEquals(valuesCount, ssdvMulti.getValueCount());
-  //      for (int i = 0; i < valuesCount; i++) {
-  //        BytesRef term = ssdvMulti.lookupOrd(i);
-  //        assertTrue(term.bytes.length > 0);
-  //      }
-  //      for (int i = 0; i < valuesCount; i++) {
-  //        for (int j = 0; j < 3; j++) {
-  //          assertTrue(ssdvMulti.lookupTerm(new BytesRef(values.get((i + j) % valuesCount))) >=
-  //              0);
-  //        }
-  //      }
-  //
-  //      SortedSetDocValues ssdvSingle = reader.getSortedSetDocValues("ssdv_single_");
-  //      assertEquals(valuesCount, ssdvSingle.getValueCount());
-  //      for (int i = 0; i < valuesCount; i++) {
-  //        assertTrue(ssdvSingle.lookupTerm(new BytesRef(values.get(i % valuesCount))) >= 0);
-  //      }
-  //
-  //      SortedDocValues sdv = reader.getSortedDocValues("sdv");
-  //      assertEquals(valuesCount, sdv.getValueCount());
-  //      for (int i = 0; i < valuesCount; i++) {
-  //        assertTrue(sdv.lookupTerm(new BytesRef(values.get(i % valuesCount))) >= 0);
-  //      }
-  //
-  //      dvdFileSize = docValueFileSize(directory);
-  //      assertTrue(dvdFileSize > 0);
-  //      ireader.close();
-  //    }
-  //
-  //    return dvdFileSize;
-  //  }
-
-  static long docValueFileSize(Directory d) throws IOException {
-    for (String file : d.listAll()) {
-      if (file.endsWith(Lucene90DocValuesFormat.DATA_EXTENSION)) {
-        return d.fileLength(file);
-      }
-    }
-    return -1;
   }
 }
