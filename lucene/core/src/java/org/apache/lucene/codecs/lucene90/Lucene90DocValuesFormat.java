@@ -174,11 +174,6 @@ public final class Lucene90DocValuesFormat extends DocValuesFormat {
   static final int NUMERIC_BLOCK_SHIFT = 14;
   static final int NUMERIC_BLOCK_SIZE = 1 << NUMERIC_BLOCK_SHIFT;
 
-  static final int TERMS_DICT_BLOCK_SHIFT = 4;
-  static final int TERMS_DICT_BLOCK_SIZE = 1 << TERMS_DICT_BLOCK_SHIFT;
-  static final int TERMS_DICT_BLOCK_MASK = TERMS_DICT_BLOCK_SIZE - 1;
-
-  static final int TERMS_DICT_BLOCK_COMPRESSION_THRESHOLD = 32;
   static final int TERMS_DICT_BLOCK_LZ4_SHIFT = 6;
   static final int TERMS_DICT_BLOCK_LZ4_SIZE = 1 << TERMS_DICT_BLOCK_LZ4_SHIFT;
   static final int TERMS_DICT_BLOCK_LZ4_MASK = TERMS_DICT_BLOCK_LZ4_SIZE - 1;

@@ -819,7 +819,7 @@ public class TestLucene90DocValuesFormat extends BaseCompressingDocValuesFormatT
   }
 
   public void testLargeTermsCompression() throws IOException {
-    final int CARDINALITY = Lucene90DocValuesFormat.TERMS_DICT_BLOCK_COMPRESSION_THRESHOLD << 1;
+    final int CARDINALITY = 64;
     Set<String> valuesSet = new HashSet<>();
     for (int i = 0; i < CARDINALITY; ++i) {
       final int length = TestUtil.nextInt(random(), 512, 1024);
