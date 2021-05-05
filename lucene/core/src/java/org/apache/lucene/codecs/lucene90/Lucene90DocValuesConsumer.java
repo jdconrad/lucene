@@ -521,11 +521,9 @@ final class Lucene90DocValuesConsumer extends DocValuesConsumer {
     final long size = values.getValueCount();
     meta.writeVLong(size);
 
-    int code = Lucene90DocValuesFormat.TERMS_DICT_BLOCK_LZ4_CODE;
     int blockMask = Lucene90DocValuesFormat.TERMS_DICT_BLOCK_LZ4_MASK;
     int shift = Lucene90DocValuesFormat.TERMS_DICT_BLOCK_LZ4_SHIFT;
 
-    meta.writeInt(code);
     meta.writeInt(DIRECT_MONOTONIC_BLOCK_SHIFT);
     ByteBuffersDataOutput addressBuffer = new ByteBuffersDataOutput();
     ByteBuffersIndexOutput addressOutput =
